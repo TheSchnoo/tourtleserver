@@ -1,3 +1,4 @@
 /Users/Wesb/Tourtle/TourtleServer/src/main/java/web/TourtleServerApplication.java
-/Users/Wesb/Tourtle/TourtleServer/src/main/java/web/WebController.java
-/Users/Wesb/Tourtle/TourtleServer/src/main/java/web/DatabaseController.java
+/Users/Wesb/Tourtle/TourtleServer/src/main/java/web/ServletInitializer.java
+/Users/Wesb/Tourtle/TourtleServer/src/main/java/web/services/ToursService.java
+/Users/Wesb/Tourtle/TourtleServer/src/main/java/web/controllers/ToursController.java
