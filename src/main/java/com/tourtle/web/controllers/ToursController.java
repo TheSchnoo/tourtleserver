@@ -28,11 +28,12 @@ public class ToursController {
         tourObject.put("name", "Adult");
         JSONArray beaconsArray = new JSONArray();
         beaconsArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B57FE6D",
-                49.270622, -123.13474100000002));
+                49.270622, -123.13474100000002, "description", "imageLink"));
         beaconsArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B5FIONA",
-                49.270622, -123.13474100000002));
+                49.270622, -123.13474100000002, "description", "imageLink"));
         tourObject.put("beacons", beaconsArray);
 
+        toursArray.put(tourObject);
         toursArray.put(tourObject);
 
         return new ResponseEntity(toursArray.toString(), HttpStatus.OK);
