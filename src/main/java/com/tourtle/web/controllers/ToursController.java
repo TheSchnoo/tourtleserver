@@ -20,17 +20,21 @@ public class ToursController {
     @RequestMapping(method = RequestMethod.GET)
     ResponseEntity<Object> getAllTours() {
         System.out.println("Base tours endpoint hit");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", "Adult");
+        JSONArray toursArray = new JSONArray();
 
+        JSONObject tourObject = new JSONObject();
+
+        // Create tour JSONObject
+        tourObject.put("name", "Adult");
         JSONArray beaconsArray = new JSONArray();
-
-
         beaconsArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B57FE6D",
                 49.270622, -123.13474100000002));
         beaconsArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B5FIONA",
                 49.270622, -123.13474100000002));
-        jsonObject.put("beacons", beaconsArray);
-        return new ResponseEntity(jsonObject.toString(), HttpStatus.OK);
+        tourObject.put("beacons", beaconsArray);
+
+        toursArray.put(tourObject);
+
+        return new ResponseEntity(toursArray.toString(), HttpStatus.OK);
     }
 }
