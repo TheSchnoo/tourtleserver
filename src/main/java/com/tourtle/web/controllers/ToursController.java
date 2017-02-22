@@ -22,19 +22,33 @@ public class ToursController {
         System.out.println("Base tours endpoint hit");
         JSONArray toursArray = new JSONArray();
 
-        JSONObject tourObject = new JSONObject();
+        JSONObject tourObject1 = new JSONObject();
 
         // Create tour JSONObject
-        tourObject.put("name", "Adult");
-        JSONArray beaconsArray = new JSONArray();
-        beaconsArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B57FE6D",
-                49.270622, -123.13474100000002, "description", "imageLink"));
-        beaconsArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B5FIONA",
-                49.270622, -123.13474100000002, "description", "imageLink"));
-        tourObject.put("beacons", beaconsArray);
+        tourObject1.put("name", "Afternoon Delight");
+        JSONArray afternoonBeaconArray = new JSONArray();
+        afternoonBeaconArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B57FE6D",
+                49.270622, -123.13474100000002,
+                "Oyama - Delicious Meats", "imageLink"));
+        afternoonBeaconArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B5FIONA",
+                49.270622, -123.13474100000002,
+                "Terra Breads - Artisan Breads", "imageLink"));
+        tourObject1.put("beacons", afternoonBeaconArray);
 
-        toursArray.put(tourObject);
-        toursArray.put(tourObject);
+
+        JSONObject tourObject2 = new JSONObject();
+        tourObject2.put("name", "Island Breakfast");
+        JSONArray breakfastBeaconArray = new JSONArray();
+        breakfastBeaconArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B57FE6A",
+                49.270622, -123.13474100000002,
+                "JJ Bean - Fresh Coffee", "imageLink"));
+        afternoonBeaconArray.put(toursService.createJsonBeaconObject("B9407F30-F5F8-466E-AFF9-25556B5FIONA",
+                49.270622, -123.13474100000002,
+                "Terra Breads - Artisan Breads", "imageLink"));
+        tourObject2.put("beacons", breakfastBeaconArray);
+
+        toursArray.put(tourObject1);
+        toursArray.put(tourObject2);
 
         return new ResponseEntity(toursArray.toString(), HttpStatus.OK);
     }
