@@ -1,5 +1,7 @@
 package com.tourtle.web.services;
 
+import com.tourtle.web.Domain.POI;
+import com.tourtle.web.Domain.Tour;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,17 @@ import java.util.Map;
 class TourtleConversionService {
 
     JSONArray convertToursListToJsonArray(List tours) {
+
+        for (Object tour : tours) {
+            String tourname = (String) ((Map) tour).get("tourname");
+            ((Map) tour).remove("tourname");
+
+            Tour tourObj = new Tour(tourname, new LinkedList<>());
+            POI poi = (POI) tour;
+            tourObj.addPoi(poi);
+            }
+
+
         // Creating a map with key tourname, values List<JSONObject> where the list is a list of POIs
         Map<String, List<JSONObject>> toursMap = convertListResponseToMap(tours);
 
