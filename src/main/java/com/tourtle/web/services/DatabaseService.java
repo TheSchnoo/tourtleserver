@@ -29,4 +29,28 @@ public class DatabaseService {
         return conversionService.convertToursListToJsonArray(tours);
 
     }
+
+    public JSONArray getTourById(String tourId) {
+        String sql = "SELECT tour.tourname, poi.* " +
+                "FROM tour, poi, tours_pois " +
+                "WHERE tour.tourid=" + tourId + " " +
+                "AND tour.tourid=tours_pois.tourid " +
+                "AND poi.beaconid=tours_pois.beaconid";
+
+        List tours = jdbcTemplate.queryForList(sql);
+
+        return conversionService.convertToursListToJsonArray(tours);
+    }
+
+    public JSONArray getTourByName(String tourName) {
+        String sql = "SELECT tour.tourname, poi.* " +
+                "FROM tour, poi, tours_pois " +
+                "WHERE tour.tourname LIKE '" +  tourName.toLowerCase() + "' " +
+                "AND tour.tourid=tours_pois.tourid " +
+                "AND poi.beaconid=tours_pois.beaconid";
+
+        List tours = jdbcTemplate.queryForList(sql);
+
+        return conversionService.convertToursListToJsonArray(tours);
+    }
 }

@@ -1,12 +1,11 @@
 package com.tourtle.web.controllers;
 
 import com.tourtle.web.services.DatabaseService;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.tourtle.web.services.ToursService;
 
 @RestController
@@ -20,9 +19,29 @@ public class ToursController {
     ToursService toursService;
 
     @RequestMapping(method = RequestMethod.GET)
-    ResponseEntity<Object> getAllTours() {
+    ResponseEntity<Object> getTours(@RequestParam(value = "tourName", required=false) String tourName) {
         System.out.println("Base tours endpoint hit");
 
-        return new ResponseEntity<>(databaseService.getAllTours().toString(), HttpStatus.OK);
+        JSONArray response;
+
+        if (tourName != null) {
+            response = databaseService.getTourByName(tourName);
+        } else {
+            response = databaseService.getAllTours();
+        }
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/{tourId}", method = RequestMethod.GET)
+    ResponseEntity<Object> getToursById(@PathVariable("tourId") String tourId) {
+        System.out.println("Base tours id endpoint hit");
+
+        JSONArray response = databaseService.getTourById(tourId);
+
+        if(response.length() == 0) {
+            return new ResponseEntity<>("No tour with tourId = " + tourId, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 }
