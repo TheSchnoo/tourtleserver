@@ -21,7 +21,9 @@ public class TourtleServerApplication {
 		return DataSourceBuilder
 				.create()
 				.driverClassName("com.mysql.jdbc.Driver")
-				.url(System.getenv("CLEARDB_DATABASE_URL"))
+				.username("b6bd158c36251a")
+				.password("13f46758")
+				.url("jdbc:mysql://us-cdbr-iron-east-04.cleardb.net/heroku_70eefa92f8ba8ee")
 				.build();
 	}
 
