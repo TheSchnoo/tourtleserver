@@ -18,12 +18,15 @@ public class TourtleServerApplication {
 	@Bean
 	@Primary
 	public DataSource dataSource() throws Exception {
+
+		String[] stringArray = System.getenv("CLEARDB_DATABASE_URL").substring(8).split("@");
+
 		return DataSourceBuilder
 				.create()
 				.driverClassName("com.mysql.jdbc.Driver")
-				.username("b6bd158c36251a")
-				.password("13f46758")
-				.url("jdbc:mysql://us-cdbr-iron-east-04.cleardb.net/heroku_70eefa92f8ba8ee")
+				.username(stringArray[0].split(":")[0])
+				.password(stringArray[0].split(":")[1])
+				.url("jdbc:mysql://" + stringArray[1])
 				.build();
 	}
 
