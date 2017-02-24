@@ -1,59 +1,37 @@
 package com.tourtle.web.services;
 
-import com.tourtle.web.Domain.POI;
-import com.tourtle.web.Domain.Tour;
+import com.tourtle.web.dao.TourDao;
+import com.tourtle.web.domain.Tour;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ToursService {
 
-    public JSONObject createJsonBeaconObject(String uuid, double lat, double lon,
-                                             String description, String imageUrl) {
-        JSONObject obj = new JSONObject();
-        obj.put("uuid", uuid);
-        obj.put("lat", lat);
-        obj.put("lon", lon);
-        obj.put("description", description);
-        obj.put("imageUrl", imageUrl);
-        return obj;
+    @Autowired
+    TourDao tourDao;
+
+    public Tour getTourById(String tourId) {
+        if (tourDao.checkTourExistsById(tourId)) {
+            return tourDao.getTourById(tourId);
+        } else {
+            throw new DataRetrievalFailureException("Couldn't find resource");
+        }
     }
 
-    public List<Tour> filterPoisToToursList(List<POI> tours) {
-
-        List<Tour> tourList = new ArrayList<>();
-
-        String tourname = "";
-
-        Tour tour = null;
-
-        int count = 0;
-
-        for (POI poi : tours) {
-            if (poi.getTourname().equals(tourname) && tour != null) {
-                // Already processing POIs for this tour
-                tour.addPoi(poi);
-            } else {
-                // New tour
-                if (!tourname.equals("")) {
-                    // If we've just finished a tour, store it before moving on to the next one
-                    tourList.add(tour);
-                }
-                tourname = poi.getTourname();
-                List<POI> pois = new ArrayList<>();
-                pois.add(poi);
-                tour = new Tour();
-                tour.setName(tourname);
-                tour.setPois(pois);
-            }
-            count++;
-            if (count == tours.size()) {
-                tourList.add(tour);
-            }
+    public Tour getTourByName(String tourName) {
+        if (tourDao.checkTourExistsByName(tourName)) {
+            return tourDao.getTourByName(tourName);
+        } else {
+            throw new DataRetrievalFailureException("Couldn't find resource");
         }
-        return tourList;
+    }
+
+    public List<Tour> getAllTours() {
+        return tourDao.getAllTours();
     }
 }
