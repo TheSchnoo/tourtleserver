@@ -2,7 +2,6 @@ package com.tourtle.web.services;
 
 import com.tourtle.web.dao.TourDao;
 import com.tourtle.web.domain.Tour;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
@@ -33,5 +32,9 @@ public class ToursService {
 
     public List<Tour> getAllTours() {
         return tourDao.getAllTours();
+    }
+
+    public int createTour(String tourId, String body) {
+        return tourDao.createTour(tourId, body);
     }
 }

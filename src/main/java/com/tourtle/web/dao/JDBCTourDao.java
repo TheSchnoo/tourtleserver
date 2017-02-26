@@ -5,6 +5,8 @@ import com.tourtle.web.dao.util.extractor.TourExtractor;
 import com.tourtle.web.dao.util.extractor.TourListExtractor;
 import com.tourtle.web.domain.POI;
 import com.tourtle.web.domain.Tour;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -55,6 +57,15 @@ public class JDBCTourDao implements TourDao {
         }
 
         return result;
+    }
+
+    @Override
+    public int createTour(String tourId, String body) {
+        JSONObject tourJson= new JSONObject(body);
+        JSONArray poiArray = tourJson.getJSONArray("beacons");
+        String sql = "INSERT INTO tour VALUES (" + tourId + ", '" + tourJson.get("name") + "')";
+        String poisSql = "INSERT INTO tours_pois VALUES (" + tourId + ", :beaconid)";
+        return jdbcTemplate.update(sql) + jdbcTemplate.update(poisSql, poiArray);
     }
 
     private void addTourBeaconIds(Tour result) {

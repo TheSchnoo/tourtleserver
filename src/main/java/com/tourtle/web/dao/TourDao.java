@@ -18,4 +18,6 @@ public interface TourDao {
     Tour getTourByName(String tourName);
 
     List<Tour> getAllTours();
+
+    int createTour(String tourId, String body);
 }

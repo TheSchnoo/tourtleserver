@@ -45,4 +45,11 @@ public class ToursController {
             return new ResponseEntity<>("Resource not found", HttpStatus.NOT_FOUND);
         }
     }
+
+    @RequestMapping(value="/{tourId}", method = RequestMethod.PUT)
+    ResponseEntity<Integer> createTour(@PathVariable("tourId") String tourId, @RequestBody String body) {
+        System.out.println("Base tours id endpoint hit");
+        int rowsAffected = toursService.createTour(tourId, body);
+        return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+    }
 }
