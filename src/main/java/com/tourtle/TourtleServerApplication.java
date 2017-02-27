@@ -27,8 +27,6 @@ public class TourtleServerApplication {
 		cpds.setJdbcUrl("jdbc:mysql://" + stringArray[1]);
 		cpds.setUser(stringArray[0].split(":")[0]);
 		cpds.setPassword(stringArray[0].split(":")[1]);
-
-// the settings below are optional -- c3p0 can work with defaults
 		cpds.setMinPoolSize(5);
 		cpds.setAcquireIncrement(5);
 		cpds.setMaxPoolSize(20);

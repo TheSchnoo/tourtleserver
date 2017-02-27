@@ -20,4 +20,11 @@ public interface TourDao {
     List<Tour> getAllTours();
 
     int createTour(String tourId, String body);
+
+    int deleteTour(String tourId);
+
+    int deleteFromTours(String tourId, String body);
+
+    int postTour(String tourId, String body);
+
 }

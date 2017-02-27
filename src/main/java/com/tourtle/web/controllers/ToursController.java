@@ -3,6 +3,7 @@ package com.tourtle.web.controllers;
 import com.tourtle.web.domain.Tour;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,9 +48,33 @@ public class ToursController {
     }
 
     @RequestMapping(value="/{tourId}", method = RequestMethod.PUT)
-    ResponseEntity<Integer> createTour(@PathVariable("tourId") String tourId, @RequestBody String body) {
+    ResponseEntity<Object> createTour(@PathVariable("tourId") String tourId, @RequestBody String body) {
         System.out.println("Base tours id endpoint hit");
-        int rowsAffected = toursService.createTour(tourId, body);
+        try {
+            int rowsAffected = toursService.createTour(tourId, body);
+            return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+        } catch (DuplicateKeyException e) {
+            return new ResponseEntity<>("A tour already exists with that tourid", HttpStatus.IM_USED);
+        }
+    }
+
+    @RequestMapping(value="/{tourId}", method = RequestMethod.POST)
+    ResponseEntity<Object> postTour(@PathVariable("tourId") String tourId, @RequestBody String body) {
+        System.out.println("POST tours endpoint hit");
+        int rowsAffected = toursService.postTour(tourId, body);
+        return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/{tourId}", method = RequestMethod.DELETE)
+    ResponseEntity<Object> deleteTour(@PathVariable("tourId") String tourId,
+                                      @RequestBody(required = false) String body) {
+        System.out.println("DELETE tours endpoint hit");
+        int rowsAffected = 0;
+        if (body != null) {
+            rowsAffected = toursService.deleteFromTours(tourId, body);
+        } else {
+            rowsAffected = toursService.deleteTour(tourId);
+        }
         return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
     }
 }

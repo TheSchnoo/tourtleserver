@@ -8,6 +8,7 @@ import com.tourtle.web.domain.Tour;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -60,12 +61,78 @@ public class JDBCTourDao implements TourDao {
     }
 
     @Override
-    public int createTour(String tourId, String body) {
-        JSONObject tourJson= new JSONObject(body);
+    public int createTour(String tourId, String body) throws DuplicateKeyException {
+        JSONObject tourJson = new JSONObject(body);
         JSONArray poiArray = tourJson.getJSONArray("beacons");
         String sql = "INSERT INTO tour VALUES (" + tourId + ", '" + tourJson.get("name") + "')";
-        String poisSql = "INSERT INTO tours_pois VALUES (" + tourId + ", :beaconid)";
-        return jdbcTemplate.update(sql) + jdbcTemplate.update(poisSql, poiArray);
+        String poisSql = "INSERT INTO tours_pois VALUES ";
+        String toursToInsert = "(" + tourId + ", %s)";
+        for (int i=0; i<poiArray.length(); i++){
+            if (i == 0) {
+                poisSql = String.format(poisSql + toursToInsert, poiArray.get(i));
+            } else {
+                poisSql = String.format(poisSql + "," + toursToInsert, poiArray.get(i));
+            }
+        }
+        int sum = 0;
+        for (int i : jdbcTemplate.batchUpdate(sql, poisSql)) {
+            sum = sum + i;
+        }
+        return sum;
+    }
+
+    @Override
+    public int deleteTour(String tourId) {
+        String deletePoisOnTourString = "DELETE FROM tours_pois WHERE tourid = " + tourId;
+        String deleteTourString = "DELETE FROM tour WHERE tourid = " + tourId;
+        int sum = 0;
+        for (int i : jdbcTemplate.batchUpdate(deletePoisOnTourString, deleteTourString)) {
+            sum = sum + i;
+        }
+        return sum;
+    }
+
+    @Override
+    public int deleteFromTours(String tourId, String body) {
+        JSONObject bodyJson = new JSONObject(body);
+        JSONArray poisToDelete = (JSONArray) bodyJson.get("beacons");
+        String[] deletePoisSqlArray = new String[poisToDelete.length()];
+        for (int i=0; i<poisToDelete.length(); i++) {
+            deletePoisSqlArray[i] =
+                    "DELETE FROM tours_pois WHERE tourid = " + tourId + " AND beaconId = " + poisToDelete.get(i);
+        }
+        int sum = 0;
+        for (int i : jdbcTemplate.batchUpdate(deletePoisSqlArray)) {
+            sum = sum + i;
+        }
+        return sum;
+    }
+
+    @Override
+    public int postTour(String tourId, String body) {
+        JSONObject tourObject = new JSONObject(body);
+        String updateTourSql = "";
+        String updateStopsSql = "";
+        if (tourObject.has("name")) {
+            updateTourSql = "UPDATE tour SET tourname = '" + tourObject.get("name") +
+                    "' WHERE tourid = " + tourId + ";";
+        }
+        if (tourObject.has("beacons")) {
+            JSONArray beaconsArray = (JSONArray) tourObject.get("beacons");
+            updateStopsSql = "INSERT INTO tours_pois VALUES ";
+            for (int i=0; i<beaconsArray.length(); i++) {
+                if (i==0) {
+                    updateStopsSql = updateStopsSql + "(" + tourId + "," + beaconsArray.get(i) + ")";
+                } else {
+                    updateStopsSql = updateStopsSql + ",(" + tourId + "," + beaconsArray.get(i) + ")";
+                }
+            }
+        }
+        int sum = 0;
+        for (int i : jdbcTemplate.batchUpdate(updateTourSql, updateStopsSql)) {
+            sum = sum + i;
+        }
+        return sum;
     }
 
     private void addTourBeaconIds(Tour result) {
