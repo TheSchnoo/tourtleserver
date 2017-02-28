@@ -13,4 +13,9 @@ public interface PoiDao {
 
     POI getPoiByID(String poiId);
 
+    int createPoi(String poiId, String body);
+
+    int postPoi(String poiId, String body);
+
+    int deletePoi(String poiId);
 }
