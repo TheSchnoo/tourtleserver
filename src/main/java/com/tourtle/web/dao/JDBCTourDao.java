@@ -8,14 +8,18 @@ import com.tourtle.web.domain.Tour;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
 public class JDBCTourDao implements TourDao {
+
+    private int retries;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -51,12 +55,19 @@ public class JDBCTourDao implements TourDao {
     @Override
     public List<Tour> getAllTours() {
         String sql = "SELECT * FROM tour";
-        List<Tour> result = jdbcTemplate.query(sql, new Object[]{}, new TourListExtractor());
-
+        List<Tour> result = Collections.emptyList();
+        try {
+            result = jdbcTemplate.query(sql, new Object[]{}, new TourListExtractor());
+        } catch (DataAccessException e) {
+            while (retries <= 3) {
+                result = jdbcTemplate.query(sql, new Object[]{}, new TourListExtractor());
+                retries++;
+            }
+            retries = 0;
+        }
         for (Tour tour : result) {
             addTourBeaconIds(tour);
         }
-
         return result;
     }
 
@@ -138,10 +149,20 @@ public class JDBCTourDao implements TourDao {
     private void addTourBeaconIds(Tour result) {
         String selectBeaconIds =
                 "SELECT poi.* FROM tours_pois, poi " +
-                "WHERE tours_pois.tourid = ? AND tours_pois.beaconid = poi.beaconid";
-        List<POI> tourids = jdbcTemplate.query(selectBeaconIds,
-                new Object[]{result.getTourId()},
-                new PoiListExtractor());
-        result.setPois(tourids);
+                        "WHERE tours_pois.tourid = ? AND tours_pois.beaconid = poi.beaconid";
+        try {
+            List<POI> tourids = jdbcTemplate.query(selectBeaconIds,
+                    new Object[]{result.getTourId()},
+                    new PoiListExtractor());
+            result.setPois(tourids);
+        } catch (DataAccessException e) {
+            if (retries < 3) {
+                retries++;
+                addTourBeaconIds(result);
+            } else {
+                retries = 0;
+                throw e;
+            }
+        }
     }
 }
