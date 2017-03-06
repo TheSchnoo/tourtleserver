@@ -147,22 +147,24 @@ public class JDBCTourDao implements TourDao {
     }
 
     private void addTourBeaconIds(Tour result) {
+        List<POI> tourids = Collections.emptyList();
         String selectBeaconIds =
                 "SELECT poi.* FROM tours_pois, poi " +
                         "WHERE tours_pois.tourid = ? AND tours_pois.beaconid = poi.beaconid";
         try {
-            List<POI> tourids = jdbcTemplate.query(selectBeaconIds,
+            tourids = jdbcTemplate.query(selectBeaconIds,
                     new Object[]{result.getTourId()},
                     new PoiListExtractor());
             result.setPois(tourids);
         } catch (DataAccessException e) {
-            if (retries < 3) {
+            while (retries <= 3) {
+                tourids = jdbcTemplate.query(selectBeaconIds,
+                        new Object[]{result.getTourId()},
+                        new PoiListExtractor());
                 retries++;
-                addTourBeaconIds(result);
-            } else {
-                retries = 0;
-                throw e;
             }
+            retries = 0;
         }
+        result.setPois(tourids);
     }
 }
