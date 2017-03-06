@@ -19,7 +19,7 @@ public class ProfileService {
         if (profileDao.checkProfileExists(username)) {
             return profileDao.getProfileByUsername(username);
         } else {
-            throw new DataRetrievalFailureException("Couldn't find resource");
+            throw new DataRetrievalFailureException("Profile does not exist");
         }
     }
 }

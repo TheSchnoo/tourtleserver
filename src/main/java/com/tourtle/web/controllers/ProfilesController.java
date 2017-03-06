@@ -30,7 +30,7 @@ public class ProfilesController {
             Profile profile = profileService.getProfileByUsername(username);
             return new ResponseEntity(profile, HttpStatus.OK);
         } catch (DataRetrievalFailureException e) {
-            return new ResponseEntity("Resource not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Profile does not exist", HttpStatus.NOT_FOUND);
         }
     }
 }

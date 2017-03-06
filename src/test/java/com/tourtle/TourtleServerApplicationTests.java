@@ -2,15 +2,33 @@ package com.tourtle;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TourtleServerApplicationTests {
 
+	@Autowired
+	private TestRestTemplate restTemplate;
+
+	private String BASE_URL = "https://tourtle-app.herokuapp.com";
+
 	@Test
-	public void contextLoads() {
+	public void profilesEndpointReturnsProfileForValidQuery() {
+		String body = restTemplate.getForObject(BASE_URL + "/profiles/moki", String.class);
+		assertThat(body).contains("username");
+		assertThat(body).contains("toursCompleted");
+	}
+
+	@Test
+	public void profilesEndpointEmptyWithInvalidQuery() {
+		String body = restTemplate.getForObject(BASE_URL + "/profiles/invalid", String.class);
+		assertThat(body).contains("Profile does not exist");
 	}
 
 }
