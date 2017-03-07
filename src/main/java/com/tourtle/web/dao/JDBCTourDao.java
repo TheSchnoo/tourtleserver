@@ -58,7 +58,7 @@ public class JDBCTourDao implements TourDao {
         List<Tour> result = Collections.emptyList();
         try {
             result = jdbcTemplate.query(sql, new Object[]{}, new TourListExtractor());
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             while (retries <= 3) {
                 result = jdbcTemplate.query(sql, new Object[]{}, new TourListExtractor());
                 retries++;
