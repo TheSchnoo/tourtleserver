@@ -1,7 +1,0 @@
-{
-  "address": "jdbc:sqlserver://tourtledbserver.database.windows.net:1433;database=Tourtle";
-  "username": 2,
-  "password": 3
-}
-
-jdbc:sqlserver://tourtledbserver.database.windows.net:1433;database=TourtleDB;user=tourtle@tourtledbserver;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
