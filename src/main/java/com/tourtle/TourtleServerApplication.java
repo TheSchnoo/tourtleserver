@@ -30,6 +30,8 @@ public class TourtleServerApplication {
 		cpds.setMinPoolSize(5);
 		cpds.setAcquireIncrement(5);
 		cpds.setMaxPoolSize(20);
+		cpds.setAcquireRetryAttempts(5);
+		cpds.setAcquireRetryDelay(3600);
 
 		return cpds;
 	}
