@@ -3,7 +3,6 @@ package com.tourtle;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
@@ -23,13 +22,8 @@ public class TourtleServerApplication {
 	public DataSource dataSource() throws DataAccessException, PropertyVetoException {
 
 		String[] stringArray;
-		try {
-			stringArray = System.getenv("CLEARDB_DATABASE_URL").substring(8).split("@");
-		} catch (Exception e) {
-			throw e;
-		}
+		stringArray = System.getenv("CLEARDB_DATABASE_URL").substring(8).split("@");
 
-		System.out.println("XXX");
 		ComboPooledDataSource cpds = new ComboPooledDataSource();
 		cpds.setDriverClass("com.mysql.jdbc.Driver");
 		cpds.setJdbcUrl("jdbc:mysql://" + stringArray[1]);
