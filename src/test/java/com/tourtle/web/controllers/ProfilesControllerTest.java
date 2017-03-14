@@ -1,4 +1,4 @@
-package com.tourtle;
+package com.tourtle.web.controllers;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TourtleServerApplicationTests {
+public class ProfilesControllerTest {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -20,9 +20,9 @@ public class TourtleServerApplicationTests {
 
 	@Test
 	public void profilesEndpointReturnsProfileForValidQuery() {
-		String body = restTemplate.getForObject(BASE_URL + "/profiles/moki", String.class);
-		assertThat(body).contains("username");
-		assertThat(body).contains("toursCompleted");
+		String body = restTemplate.getForObject(BASE_URL + "/tours/", String.class);
+		assertThat(body).contains("pois");
+		assertThat(body).contains("beacons");
 	}
 
 	@Test
