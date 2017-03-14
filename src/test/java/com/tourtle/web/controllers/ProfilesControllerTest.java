@@ -20,9 +20,9 @@ public class ProfilesControllerTest {
 
 	@Test
 	public void profilesEndpointReturnsProfileForValidQuery() {
-		String body = restTemplate.getForObject(BASE_URL + "/tours/", String.class);
-		assertThat(body).contains("pois");
-		assertThat(body).contains("beacons");
+		String body = restTemplate.getForObject(BASE_URL + "/profiles/moki", String.class);
+		assertThat(body).contains("username");
+		assertThat(body).contains("toursCompleted");
 	}
 
 	@Test
