@@ -43,13 +43,19 @@ public class ToursControllerTest {
     }
 
     @Test
-    public void getToursById() throws Exception {
+    public void getToursByIdReturnsTourForValidId() throws Exception {
         String body = restTemplate.getForObject(BASE_URL + "/tours/2", String.class);
         assertThat(body).contains("tourId");
         assertThat(body).contains("name");
         assertThat(body).contains("beacons");
         JSONArray beacons = getBeaconArray(body);
         assertThat(beacons.length()).isGreaterThan(0);
+    }
+
+    @Test
+    public void noTourReturnedWhenTourIdNotValid() throws Exception {
+        String body = restTemplate.getForObject(BASE_URL + "/tours/-1", String.class);
+        assertThat(body).contains("Resource not found");
     }
 
     @Test
