@@ -22,7 +22,7 @@ public class ProfilesControllerTest {
 	public void profilesEndpointReturnsProfileForValidQuery() {
 		String body = restTemplate.getForObject(BASE_URL + "/profiles/moki", String.class);
 		assertThat(body).contains("username");
-		assertThat(body).contains("toursCompleted");
+		assertThat(body).contains("ToursCompleted");
 	}
 
 	@Test
