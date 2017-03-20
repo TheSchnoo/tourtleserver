@@ -20,7 +20,7 @@ public class TourtleServerApplication {
 	@Primary
 	public DataSource dataSource() throws Exception {
 
-		String[] stringArray = System.getenv("DATABASE_URL").substring(8).split("@");
+		String[] stringArray = System.getenv("DATABASE_URL").split("@");
 
 		ComboPooledDataSource cpds = new ComboPooledDataSource();
 		cpds.setDriverClass("com.mysql.jdbc.Driver");
