@@ -7,8 +7,7 @@ import lombok.Data;
 
 @Data
 public class POI {
-    @JsonView(Views.ResponseData.class)
-    @JsonProperty("uuid") String beaconId;
+    @JsonView(Views.ResponseData.class) @JsonProperty("uuid") String beaconId;
     @JsonView(Views.ResponseData.class) String name;
     @JsonView(Views.ResponseData.class) Double lat;
     @JsonView(Views.ResponseData.class) Double lon;

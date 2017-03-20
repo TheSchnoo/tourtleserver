@@ -7,7 +7,8 @@ import com.tourtle.web.domain.Profile;
  */
 public interface ProfileDao {
 
-    Profile getProfileByUsername(String poiId);
+    boolean checkMobileProfileExists(String profileId);
 
-    boolean checkProfileExists(String profileId);
+    void createMobileProfile(String username, String password);
+
 }

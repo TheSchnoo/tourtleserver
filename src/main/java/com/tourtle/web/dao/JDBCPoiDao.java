@@ -1,5 +1,6 @@
 package com.tourtle.web.dao;
 
+import com.tourtle.web.dao.util.extractor.IDExtractor;
 import com.tourtle.web.dao.util.extractor.PoiExtractor;
 import com.tourtle.web.domain.POI;
 import org.json.JSONException;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Types;
 import java.util.Iterator;
+import java.util.List;
 
 @Repository
 public class JDBCPoiDao implements PoiDao {
@@ -69,5 +71,17 @@ public class JDBCPoiDao implements PoiDao {
         checkPoiExists(poiId);
         String updatePoiString = "DELETE FROM poi WHERE beaconid = " + poiId;
         return jdbcTemplate.update(updatePoiString);
+    }
+
+    @Override
+    public List<String> getCompletedPOIByMobileUser(String username) {
+        String sql = "SELECT beaconid as id FROM userprofiles_pois WHERE username = ?";
+        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
+    }
+
+    @Override
+    public List<String> getOwnedPOIByWebUser(String username) {
+        String sql = "SELECT beaconid as id FROM poi WHERE owner = ?";
+        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
     }
 }

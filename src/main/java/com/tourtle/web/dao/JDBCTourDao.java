@@ -1,5 +1,6 @@
 package com.tourtle.web.dao;
 
+import com.tourtle.web.dao.util.extractor.IDExtractor;
 import com.tourtle.web.dao.util.extractor.PoiListExtractor;
 import com.tourtle.web.dao.util.extractor.TourExtractor;
 import com.tourtle.web.dao.util.extractor.TourListExtractor;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -58,7 +60,7 @@ public class JDBCTourDao implements TourDao {
         List<Tour> result = Collections.emptyList();
         try {
             result = jdbcTemplate.query(sql, new Object[]{}, new TourListExtractor());
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             while (retries <= 3) {
                 result = jdbcTemplate.query(sql, new Object[]{}, new TourListExtractor());
                 retries++;
@@ -166,5 +168,15 @@ public class JDBCTourDao implements TourDao {
             retries = 0;
         }
         result.setPois(tourids);
+    }
+
+    public List<String> getCompletedToursByMobileUser(String username) {
+        String sql = "SELECT tourid AS id FROM userprofiles_tours WHERE username = ?";
+        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
+    }
+
+    public List<String> getOwnedToursByWebUser(String username) {
+        String sql = "SELECT tourid AS id FROM tour WHERE owner = ?";
+        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
     }
 }

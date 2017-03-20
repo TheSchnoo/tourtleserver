@@ -21,40 +21,7 @@ public class JDBCProfileDao implements ProfileDao {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public Profile getProfileByUsername(String username) {
-        Profile result = null;
-        String sql = "SELECT * FROM userprofile WHERE username = ?";
-        try {
-            result = jdbcTemplate.query(sql, new Object[]{username}, new ProfileExtractor());
-        } catch (RecoverableDataAccessException e) {
-            while (retries <= 3) {
-                result = jdbcTemplate.query(sql, new Object[]{username}, new ProfileExtractor());
-                retries++;
-            }
-            retries = 0;
-        }
-        if (result != null) {
-            result.setToursCompleted(addCompletedTours(username));
-        }
-        return result;
-    }
-
-    private List<Tour> addCompletedTours(String username) {
-        List<Tour> tourids;
-        String selectProfileTours =
-                "SELECT tour.tourname, userprofiles_tours.tourid FROM userprofiles_tours, tour " +
-                        "WHERE userprofiles_tours.username = ? AND tour.tourid = userprofiles_tours.tourid";
-        try {
-            tourids = jdbcTemplate.query(selectProfileTours,
-                    new Object[]{username}, new TourListExtractor());
-        } catch (RecoverableDataAccessException e) {
-            tourids = retryQueryForTourList(selectProfileTours, username, new TourListExtractor());
-        }
-        return tourids;
-    }
-
-    @Override
-    public boolean checkProfileExists(String username) {
+    public boolean checkMobileProfileExists(String username) {
         boolean response = false;
         String sql = "SELECT EXISTS(SELECT username FROM userprofile WHERE username = ?)";
         try {
@@ -69,13 +36,8 @@ public class JDBCProfileDao implements ProfileDao {
         return response;
     }
 
-    private List<Tour> retryQueryForTourList(String sql, String queryParameter, TourListExtractor extractor) {
-        List<Tour> returnList = Collections.emptyList();
-        while (retries <= 3) {
-            returnList = jdbcTemplate.query(sql, new Object[]{queryParameter}, extractor);
-            retries++;
-        }
-        retries = 0;
-        return returnList;
-    }
+    public void createMobileProfile(String username, String password) {
+        String sqlInsert = String.format("INSERT INTO userprofile (username, userpass) VALUES ('%s', '%s')", username, password);
+        jdbcTemplate.update(sqlInsert);
+    };
 }

@@ -27,7 +27,7 @@ public class PoiService {
     public int createPoi(String poiId, String body) throws JSONException {
         return poiDao.createPoi(poiId, body);
     }
-
+    
     public int postPoi(String poiId, String body) {
         return poiDao.postPoi(poiId, body);
     }
