@@ -25,6 +25,13 @@ public class LoginController {
     @Autowired ProfileService profileService;
     @Autowired WebProfileService webProfileService;
 
+    public LoginController (LoginService loginService, ProfileService profileService,
+                            WebProfileService webProfileService) {
+        this.loginService = loginService;
+        this.profileService = profileService;
+        this.webProfileService = webProfileService;
+    }
+
 
     //TODO Handle usernames that are too long/funny characters
 
