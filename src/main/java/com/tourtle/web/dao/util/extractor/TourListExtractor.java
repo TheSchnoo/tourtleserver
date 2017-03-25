@@ -19,8 +19,10 @@ public class TourListExtractor implements ResultSetExtractor<List<Tour>> {
             Tour tour = new Tour();
             tour.setName(rs.getString("tourname"));
             tour.setTourId(rs.getString("tourid"));
+            tour.setImageurl(rs.getString("imageUrl"));
             toursList.add(tour);
         }
+
         return toursList;
     }
 }

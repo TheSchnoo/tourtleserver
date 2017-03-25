@@ -18,6 +18,7 @@ public class TourExtractor implements ResultSetExtractor<Tour> {
         Tour tour = new Tour();
         tour.setName(rs.getString("tourname"));
         tour.setTourId(rs.getString("tourid"));
+        tour.setImageurl(rs.getString("imageURL"));
         return tour;
     }
 }

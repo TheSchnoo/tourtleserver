@@ -12,4 +12,5 @@ public class Tour {
     @JsonView(Views.ResponseData.class) String tourId;
     @JsonView(Views.ResponseData.class) String name;
     @JsonProperty("beacons") List<POI> pois;
+    @JsonView(Views.ResponseData.class) String imageurl;
 }
