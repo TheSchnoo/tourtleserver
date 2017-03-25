@@ -37,7 +37,15 @@ public class JDBCProfileDao implements ProfileDao {
     }
 
     public void createMobileProfile(String username, String password) {
-        String sqlInsert = String.format("INSERT INTO userprofile (username, userpass) VALUES ('%s', '%s')", username, password);
+        String sqlInsert = String.format("INSERT INTO userprofile (username, userpass) VALUES ('%s', '%s')",
+                username, password);
         jdbcTemplate.update(sqlInsert);
-    };
+    }
+
+    @Override
+    public int deleteMobileProfile(String username, String password) {
+        String sqlInsert = String.format("DELETE FROM userprofile WHERE username = '%s' AND userpass = '%s')",
+                username, password);
+        return jdbcTemplate.update(sqlInsert);
+    }
 }

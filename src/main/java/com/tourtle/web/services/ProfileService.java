@@ -57,4 +57,8 @@ public class ProfileService {
         profileDao.createMobileProfile(username, password);
         return getProfileByUsername(username);
     }
+
+    public int deleteMobileProfile(String username, String password) {
+        return profileDao.deleteMobileProfile(username, password);
+    }
 }

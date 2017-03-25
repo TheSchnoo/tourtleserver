@@ -11,4 +11,5 @@ public interface ProfileDao {
 
     void createMobileProfile(String username, String password);
 
+    int deleteMobileProfile(String username, String password);
 }

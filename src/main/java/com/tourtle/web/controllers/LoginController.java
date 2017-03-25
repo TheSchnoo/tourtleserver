@@ -26,6 +26,9 @@ public class LoginController {
     @Autowired WebProfileService webProfileService;
 
 
+    //TODO Handle usernames that are too long/funny characters
+
+
     @RequestMapping(value="/mobile", method = RequestMethod.PUT)
     public ResponseEntity<Profile> loginMobile(@RequestBody LoginBodyInput input) {
         boolean authenticated = loginService.loginMobile(input.user, input.password);
@@ -68,6 +71,17 @@ public class LoginController {
             return new ResponseEntity(wp, HttpStatus.CREATED);
         } else {
             return new ResponseEntity("Username is already taken", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @RequestMapping(value="/mobile", method = RequestMethod.DELETE)
+    ResponseEntity<Object> deleteMobileProfile(@RequestBody LoginBodyInput input) {
+        int rowsAffected = 0;
+        rowsAffected = profileService.deleteMobileProfile(input.user, input.password);
+        if (rowsAffected == 0) {
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
         }
     }
 

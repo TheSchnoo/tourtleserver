@@ -7,5 +7,4 @@ public interface WebProfileDao {
     boolean checkWebProfileExists(String username);
 
     void createWebProfile(String username, String password);
-
 }
