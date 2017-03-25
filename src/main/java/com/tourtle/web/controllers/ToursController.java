@@ -7,7 +7,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.tourtle.web.services.ToursService;
+import com.tourtle.web.services.TourService;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class ToursController {
 
     @Autowired
-    ToursService toursService;
+    TourService tourService;
 
     @RequestMapping(method = RequestMethod.GET)
     ResponseEntity<Object> getTours(@RequestParam(value = "tourName", required=false) String tourName) {
@@ -24,10 +24,10 @@ public class ToursController {
         List response;
         try {
             if (tourName != null) {
-                Tour tour = toursService.getTourByName(tourName);
+                Tour tour = tourService.getTourByName(tourName);
                 return new ResponseEntity<>(tour, HttpStatus.OK);
             } else {
-                List<Tour> tours = toursService.getAllTours();
+                List<Tour> tours = tourService.getAllTours();
                 return new ResponseEntity<>(tours, HttpStatus.OK);
             }
         } catch (DataRetrievalFailureException e) {
@@ -40,7 +40,7 @@ public class ToursController {
         System.out.println("Base tours id endpoint hit");
 
         try {
-            Tour tour = toursService.getTourById(tourId);
+            Tour tour = tourService.getTourById(tourId);
             return new ResponseEntity<>(tour, HttpStatus.OK);
         } catch (DataRetrievalFailureException e) {
             return new ResponseEntity<>("Resource not found", HttpStatus.NOT_FOUND);
@@ -51,7 +51,7 @@ public class ToursController {
     ResponseEntity<Object> createTour(@PathVariable("tourId") String tourId, @RequestBody String body) {
         System.out.println("Base tours id endpoint hit");
         try {
-            int rowsAffected = toursService.createTour(tourId, body);
+            int rowsAffected = tourService.createTour(tourId, body);
             return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
         } catch (DuplicateKeyException e) {
             return new ResponseEntity<>("A tour already exists with that tourid", HttpStatus.IM_USED);
@@ -61,7 +61,7 @@ public class ToursController {
     @RequestMapping(value="/{tourId}", method = RequestMethod.POST)
     ResponseEntity<Object> postTour(@PathVariable("tourId") String tourId, @RequestBody String body) {
         System.out.println("POST tours endpoint hit");
-        int rowsAffected = toursService.postTour(tourId, body);
+        int rowsAffected = tourService.postTour(tourId, body);
         return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
     }
 
@@ -71,9 +71,9 @@ public class ToursController {
         System.out.println("DELETE tours endpoint hit");
         int rowsAffected = 0;
         if (body != null) {
-            rowsAffected = toursService.deleteFromTours(tourId, body);
+            rowsAffected = tourService.deleteFromTours(tourId, body);
         } else {
-            rowsAffected = toursService.deleteTour(tourId);
+            rowsAffected = tourService.deleteTour(tourId);
         }
         return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
     }

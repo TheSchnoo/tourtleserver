@@ -1,6 +1,7 @@
 package com.tourtle.web.controllers;
 
 import com.tourtle.web.domain.Tour;
+import com.tourtle.web.services.TourService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,32 +9,61 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ToursControllerTest {
 
-    private String BASE_URL = "https://tourtle-app.herokuapp.com";
+    private final static String BASE_URL = "/tours";
 
-    private Stack<String> tourIdsToDelete;
+    private MockMvc mockMvc;
+
+    @Mock
+    private TourService mockTourService;
+
+    @InjectMocks
+    private ToursController toursController;
 
     @Before
     public void setUp() throws Exception {
-        tourIdsToDelete = new Stack<>();
+        mockMvc = MockMvcBuilders.standaloneSetup(toursController).build();
+    }
+
+    private List<Tour> createTours() {
+        List<Tour> tours = new ArrayList<>();
+        Tour t0 = new Tour();
+        Tour t1 = new Tour();
+
+        tours.add(t0);
+        tours.add(t1);
+
+        return tours;
     }
 
     @Test
-    public void toursReturnObjectContainsAllFields() throws Exception {
-//        String body = restTemplate.getForObject(BASE_URL + "/tours", String.class);
-//        assertThat(body).contains("tourId");
-//        assertThat(body).contains("name");
-//        assertThat(body).contains("beacons");
+    public void returnAllTours() throws Exception {
+        List<Tour> tours = createTours();
+        when(mockTourService.getAllTours()).thenReturn(tours);
+        mockMvc.perform(get(BASE_URL))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("Tours"));
     }
 
     @Test
