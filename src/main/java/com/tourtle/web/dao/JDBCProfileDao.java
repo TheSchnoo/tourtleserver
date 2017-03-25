@@ -44,7 +44,7 @@ public class JDBCProfileDao implements ProfileDao {
 
     @Override
     public int deleteMobileProfile(String username, String password) {
-        String sqlInsert = String.format("DELETE FROM userprofile WHERE username = '%s' AND userpass = '%s')",
+        String sqlInsert = String.format("DELETE FROM userprofile WHERE username = '%s' AND userpass = '%s'",
                 username, password);
         return jdbcTemplate.update(sqlInsert);
     }
