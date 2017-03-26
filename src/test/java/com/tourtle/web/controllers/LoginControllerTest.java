@@ -37,12 +37,27 @@ public class LoginControllerTest {
     private LoginService mockLoginService;
     private ProfileService mockProfileService;
     private WebProfileService mockWebProfileService;
+    private JSONObject batmanCredentials;
+    private JSONObject invalidCredentials;
+    private JSONObject dogCredentials;
 
 
     // TODO TESTS FOR FUNNY STRINGS?
 
     @Before
     public void setUp() throws Exception {
+
+        batmanCredentials = new JSONObject();
+        batmanCredentials.put("user", USERNAME);
+        batmanCredentials.put("password", PW);
+
+        invalidCredentials = new JSONObject();
+        invalidCredentials.put("user", "noone");
+        invalidCredentials.put("password", "nothing");
+
+        dogCredentials = new JSONObject();
+        dogCredentials.put("user", "Dog");
+        dogCredentials.put("password", "getdogbones");
 
         mockLoginService = mock(LoginService.class);
         mockProfileService = mock(ProfileService.class);
@@ -67,8 +82,6 @@ public class LoginControllerTest {
         when(mockWebProfileService.checkWebProfileExists(USERNAME)).thenReturn(true);
         when(mockWebProfileService.getProfileByUserName(USERNAME)).thenReturn(batmanWebProfile);
 
-
-
         mockMvc = MockMvcBuilders.standaloneSetup(new LoginController(
                 mockLoginService, mockProfileService, mockWebProfileService))
                 .build();
@@ -76,13 +89,10 @@ public class LoginControllerTest {
 
     @Test
     public void ValidMobileLoginReturnsProfile() throws Exception {
-        JSONObject credentials = new JSONObject();
-        credentials.put("user", USERNAME);
-        credentials.put("password", PW);
 
         mockMvc.perform(put(BASE_URL + "/mobile")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(credentials.toString()))
+                .content(batmanCredentials.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{'username':'Batman','ToursCompleted':[], 'PoiVisited':[]}"));
 
@@ -113,13 +123,10 @@ public class LoginControllerTest {
 
     @Test
     public void UniqueMobileAccountCreationSucceeds() throws Exception {
-        JSONObject credentials = new JSONObject();
-        credentials.put("user", "Dog");
-        credentials.put("password", "getdogbones");
 
         mockMvc.perform(post(BASE_URL + "/mobile")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(credentials.toString()))
+                .content(dogCredentials.toString()))
                 .andExpect(status().isCreated());
 
         verify(mockProfileService, times(1)).checkMobileProfileExists("Dog");
@@ -130,13 +137,10 @@ public class LoginControllerTest {
 
     @Test
     public void NonUniqueMobileAccountCreationFailsWithMessage() throws Exception {
-        JSONObject credentials = new JSONObject();
-        credentials.put("user", USERNAME);
-        credentials.put("password", PW);
 
         mockMvc.perform(post(BASE_URL + "/mobile")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(credentials.toString()))
+                .content(batmanCredentials.toString()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string("Username is already taken"));
 
@@ -147,13 +151,9 @@ public class LoginControllerTest {
     @Test
     public void ValidWebLoginReturnsProfile() throws Exception {
 
-        JSONObject credentials = new JSONObject();
-        credentials.put("user", USERNAME);
-        credentials.put("password", PW);
-
         mockMvc.perform(put(BASE_URL + "/web")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(credentials.toString()))
+                .content(batmanCredentials.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{'username':'Batman','Tours':[], 'Beacons':[]}"));
 
@@ -166,13 +166,10 @@ public class LoginControllerTest {
 
     @Test
     public void UnauthorizedWebLoginProducesUnauthorizedNotification() throws Exception {
-        JSONObject credentials = new JSONObject();
-        credentials.put("user", "noone");
-        credentials.put("password", "nothing");
 
         mockMvc.perform(put(BASE_URL + "/web")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(credentials.toString()))
+                .content(invalidCredentials.toString()))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("Unauthorized"));
 
@@ -184,13 +181,10 @@ public class LoginControllerTest {
 
     @Test
     public void UniqueWebAccountCreationSucceeds() throws Exception {
-        JSONObject credentials = new JSONObject();
-        credentials.put("user", "Dog");
-        credentials.put("password", "getdogbones");
 
         mockMvc.perform(post(BASE_URL + "/web")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(credentials.toString()))
+                .content(dogCredentials.toString()))
                 .andExpect(status().isCreated());
 
         verify(mockWebProfileService, times(1)).checkWebProfileExists("Dog");
@@ -201,18 +195,37 @@ public class LoginControllerTest {
 
     @Test
     public void NonUniqueWebAccountCreationFailsWithMessage() throws Exception {
-        JSONObject credentials = new JSONObject();
-        credentials.put("user", USERNAME);
-        credentials.put("password", PW);
 
         mockMvc.perform(post(BASE_URL + "/web")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(credentials.toString()))
+                .content(batmanCredentials.toString()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string("Username is already taken"));
 
         verify(mockWebProfileService, times(1)).checkWebProfileExists(USERNAME);
         verifyNoMoreInteractions(mockWebProfileService);
+    }
+
+    @Test
+    public void deleteAuthorizedMobileProfileSucceeds() throws Exception {
+
+        when(mockProfileService.deleteMobileProfile(USERNAME, PW)).thenReturn(1);
+        mockMvc.perform(delete(BASE_URL + "/mobile")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(batmanCredentials.toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+    }
+
+    @Test
+    public void deleteUnauthorizedMobileProfileFails() throws Exception {
+
+        when(mockProfileService.deleteMobileProfile(USERNAME, PW)).thenReturn(0);
+        mockMvc.perform(delete(BASE_URL + "/mobile")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(batmanCredentials.toString()))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Invalid credentials"));
     }
 
     @After

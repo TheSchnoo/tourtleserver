@@ -37,9 +37,9 @@ public class PoisController {
                                            @RequestBody(required = false) String body) {
         try {
             int rowsAffected = poiService.createPoi(poiId, body);
-            return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+            return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.OK);
         } catch (JSONException e) {
-            return new ResponseEntity<>("Malformed POI data", HttpStatus.OK);
+            return new ResponseEntity<>("Malformed POI data", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -47,13 +47,13 @@ public class PoisController {
     public ResponseEntity<Integer> postPoi(@PathVariable("poiId") String poiId,
                                        @RequestBody(required = false) String body) {
         int rowsAffected = poiService.postPoi(poiId, body);
-        return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+        return new ResponseEntity("Rows Affected: " + rowsAffected, HttpStatus.OK);
     }
 
     @RequestMapping(value="/{poiId}", method = RequestMethod.DELETE)
     public ResponseEntity deletePoi(@PathVariable("poiId") String poiId) {
         try {
-            return new ResponseEntity<>(poiService.deletePoi(poiId), HttpStatus.OK);
+            return new ResponseEntity<>("Rows Affected: " + poiService.deletePoi(poiId), HttpStatus.OK);
         } catch (DataRetrievalFailureException e) {
             return new ResponseEntity<>("Resource not found", HttpStatus.NOT_FOUND);
         }

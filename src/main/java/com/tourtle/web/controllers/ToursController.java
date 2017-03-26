@@ -19,6 +19,7 @@ public class ToursController {
     TourService tourService;
 
     @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
     ResponseEntity<Object> getTours(@RequestParam(value = "tourName", required=false) String tourName) {
         System.out.println("Base tours endpoint hit");
         List response;
@@ -62,7 +63,10 @@ public class ToursController {
     ResponseEntity<Object> postTour(@PathVariable("tourId") String tourId, @RequestBody String body) {
         System.out.println("POST tours endpoint hit");
         int rowsAffected = tourService.postTour(tourId, body);
-        return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+        if (rowsAffected == 0) {
+            return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.OK);
     }
 
     @RequestMapping(value="/{tourId}", method = RequestMethod.DELETE)
@@ -75,6 +79,10 @@ public class ToursController {
         } else {
             rowsAffected = tourService.deleteTour(tourId);
         }
-        return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+
+        if (rowsAffected == 0) {
+            return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.OK);
     }
 }

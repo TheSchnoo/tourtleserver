@@ -86,7 +86,7 @@ public class LoginController {
         int rowsAffected = 0;
         rowsAffected = profileService.deleteMobileProfile(input.user, input.password);
         if (rowsAffected == 0) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
         }
