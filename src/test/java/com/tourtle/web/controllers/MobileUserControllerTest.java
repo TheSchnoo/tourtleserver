@@ -66,16 +66,13 @@ public class MobileUserControllerTest {
         mobileProfile.setPoiVisited(pois);
 
         when(mockMobileProfileService.checkMobileProfileExists("profile0")).thenReturn(true);
-        when(mockMobileProfileService.updateVisitedPOIs("profile0", visitedArray))
+        when(mockMobileProfileService.updateVisitedPOIs("profile0", null))
                 .thenReturn(mobileProfile);
-        when(mockPoiService.checkAllPOIExist(visitedArray)).thenReturn(true);
-
-        JSONObject input = new JSONObject();
-        input.put("uuids", visitedArray);
+        when(mockPoiService.checkAllPOIExist(null)).thenReturn(true);
 
         mockMvc.perform(post(BASE_URL + "/profile0/poivisited")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(input.toString()))
+                .content("{}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$..username").value("profile0"))
                 .andExpect(jsonPath("$..toursCompleted").exists())
