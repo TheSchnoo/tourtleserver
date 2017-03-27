@@ -27,8 +27,12 @@ public interface TourDao {
 
     int postTour(String tourId, String body);
 
+    int addCompletedTourToMobileUser(int tourId, String username);
+
     List<String> getCompletedToursByMobileUser(String username);
 
     List<String> getOwnedToursByWebUser(String username);
+
+    List<Integer> getAllTourIdsUsingPOIId(String beaconId);
 
 }

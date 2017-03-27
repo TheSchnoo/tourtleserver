@@ -16,6 +16,19 @@ public class PoiService {
     @Autowired
     PoiDao poiDao;
 
+    public boolean checkPOIExists(String poiId) {
+        return poiDao.checkPoiExists(poiId);
+    }
+
+    public boolean checkAllPOIExist(String[] poiIds) {
+        for (String poiId : poiIds) {
+            if (!checkPOIExists(poiId)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public POI getPoiById(String poiId) {
         if (poiDao.checkPoiExists(poiId)) {
             return poiDao.getPoiByID(poiId);

@@ -1,19 +1,14 @@
 package com.tourtle.web.dao;
 
 import com.tourtle.web.dao.util.extractor.ProfileExtractor;
-import com.tourtle.web.dao.util.extractor.TourListExtractor;
-import com.tourtle.web.domain.Profile;
-import com.tourtle.web.domain.Tour;
+import com.tourtle.web.domain.MobileProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
-import java.util.List;
-
 @Repository
-public class JDBCProfileDao implements ProfileDao {
+public class JDBCMobileProfileDao implements MobileProfileDao {
 
     private int retries;
 

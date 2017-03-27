@@ -1,6 +1,5 @@
 package com.tourtle;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -21,18 +20,13 @@ public class TourtleServerApplication {
 	public DataSource dataSource() throws Exception {
 
 		String[] stringArray = System.getenv("DATABASE_URL").split("@");
-
-		ComboPooledDataSource cpds = new ComboPooledDataSource();
-		cpds.setDriverClass("com.mysql.jdbc.Driver");
-		cpds.setJdbcUrl("jdbc:mysql://" + stringArray[1]);
-		cpds.setUser(stringArray[0].split(":")[0]);
-		cpds.setPassword(stringArray[0].split(":")[1]);
-		cpds.setMinPoolSize(5);
-		cpds.setAcquireIncrement(5);
-		cpds.setMaxPoolSize(20);
-
-		return cpds;
+		String credentials = stringArray[0].substring(8);
+		return DataSourceBuilder
+				.create()
+				.username(credentials.split(":")[0])
+				.password(credentials.split(":")[1])
+				.url("jdbc:mysql://" + stringArray[1])
+				.build();
 	}
-
 }
 

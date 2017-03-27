@@ -1,6 +1,6 @@
 package com.tourtle.web.dao;
 
-import com.tourtle.web.dao.util.extractor.IDExtractor;
+import com.tourtle.web.dao.util.extractor.StringIDExtractor;
 import com.tourtle.web.dao.util.extractor.PoiExtractor;
 import com.tourtle.web.domain.POI;
 import org.json.JSONException;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Types;
 import java.util.Iterator;
 import java.util.List;
 
@@ -74,14 +73,33 @@ public class JDBCPoiDao implements PoiDao {
     }
 
     @Override
+    public int addPoiToMobileUser(String profileName, String uuid) {
+        String sql = "INSERT IGNORE into userprofiles_pois values (?, ?)";
+        return jdbcTemplate.update(sql, new Object[]{profileName, uuid});
+
+    }
+
+    @Override
     public List<String> getCompletedPOIByMobileUser(String username) {
-        String sql = "SELECT beaconid as id FROM userprofiles_pois WHERE username = ?";
-        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
+        String sql = "SELECT beaconid AS id FROM userprofiles_pois WHERE username = ?";
+        return jdbcTemplate.query(sql, new Object[]{username}, new StringIDExtractor());
+    }
+
+    @Override
+    public List<String> getCompletedPOIIdForTourByMobileUser(String username, int tourId) {
+        String sql = "SELECT up.beaconid AS id FROM userprofiles_pois up JOIN tours_pois tp ON up.beaconid = tp.beaconid WHERE username = ? and tourid = ?";
+        return jdbcTemplate.query(sql, new Object[]{username, tourId}, new StringIDExtractor());
+    }
+
+    @Override
+    public List<String> getPOIIdForTour(int tourId) {
+        String sql = "SELECT beaconid AS id FROM tours_pois WHERE tourid = ?";
+        return jdbcTemplate.query(sql, new Object[]{tourId}, new StringIDExtractor());
     }
 
     @Override
     public List<String> getOwnedPOIByWebUser(String username) {
         String sql = "SELECT beaconid as id FROM poi WHERE owner = ?";
-        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
+        return jdbcTemplate.query(sql, new Object[]{username}, new StringIDExtractor());
     }
 }

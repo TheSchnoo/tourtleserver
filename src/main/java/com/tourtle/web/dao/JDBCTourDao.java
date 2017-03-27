@@ -1,9 +1,6 @@
 package com.tourtle.web.dao;
 
-import com.tourtle.web.dao.util.extractor.IDExtractor;
-import com.tourtle.web.dao.util.extractor.PoiListExtractor;
-import com.tourtle.web.dao.util.extractor.TourExtractor;
-import com.tourtle.web.dao.util.extractor.TourListExtractor;
+import com.tourtle.web.dao.util.extractor.*;
 import com.tourtle.web.domain.POI;
 import com.tourtle.web.domain.Tour;
 import org.json.JSONArray;
@@ -11,7 +8,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -148,6 +144,12 @@ public class JDBCTourDao implements TourDao {
         return sum;
     }
 
+    @Override
+    public int addCompletedTourToMobileUser(int tourId, String username) {
+        String sql = "INSERT IGNORE INTO userprofiles_tours VALUES (?,?)";
+        return jdbcTemplate.update(sql, new Object[]{username, tourId});
+    }
+
     private void addTourBeaconIds(Tour result) {
         List<POI> tourids = Collections.emptyList();
         String selectBeaconIds =
@@ -172,11 +174,19 @@ public class JDBCTourDao implements TourDao {
 
     public List<String> getCompletedToursByMobileUser(String username) {
         String sql = "SELECT tourid AS id FROM userprofiles_tours WHERE username = ?";
-        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
+        return jdbcTemplate.query(sql, new Object[]{username}, new StringIDExtractor());
     }
 
     public List<String> getOwnedToursByWebUser(String username) {
         String sql = "SELECT tourid AS id FROM tour WHERE owner = ?";
-        return jdbcTemplate.query(sql, new Object[]{username}, new IDExtractor());
+        return jdbcTemplate.query(sql, new Object[]{username}, new StringIDExtractor());
     }
+
+    @Override
+    public List<Integer> getAllTourIdsUsingPOIId(String beaconId) {
+        String sql = "SELECT t.tourid AS id FROM tours_pois tp JOIN tour t ON t.tourid = tp.tourid WHERE tp.beaconid=?";
+        return jdbcTemplate.query(sql, new Object[]{beaconId}, new IntegerIdExtractor());
+
+    }
+
 }

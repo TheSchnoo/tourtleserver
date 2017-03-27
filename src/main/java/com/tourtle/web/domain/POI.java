@@ -13,4 +13,5 @@ public class POI {
     @JsonView(Views.ResponseData.class) Double lon;
     @JsonView(Views.ResponseData.class) String description;
     @JsonView(Views.ResponseData.class) String imageurl;
+
 }

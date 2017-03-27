@@ -1,15 +1,14 @@
 package com.tourtle.web.dao;
 
-import com.tourtle.web.domain.Profile;
-
 /**
  * DAO for Profile
  */
-public interface ProfileDao {
+public interface MobileProfileDao {
 
     boolean checkMobileProfileExists(String profileId);
 
     void createMobileProfile(String username, String password);
 
     int deleteMobileProfile(String username, String password);
+
 }

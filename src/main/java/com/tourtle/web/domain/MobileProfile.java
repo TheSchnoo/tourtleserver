@@ -9,8 +9,8 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Profile {
+public class MobileProfile {
     @JsonView(Views.ResponseData.class) String username;
-    @JsonProperty("ToursCompleted") @JsonView(Views.ResponseData.class) List<String> toursCompleted;
-    @JsonProperty("PoiVisited") @JsonView(Views.ResponseData.class) List<String> poiVisited;
+    @JsonProperty("toursCompleted") @JsonView(Views.ResponseData.class) List<String> toursCompleted;
+    @JsonProperty("poisVisited") @JsonView(Views.ResponseData.class) List<String> poiVisited;
 }

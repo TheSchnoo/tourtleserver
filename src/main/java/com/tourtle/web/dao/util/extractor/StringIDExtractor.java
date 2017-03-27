@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Extracts lists of ids, as long as they're strings.
  */
-public class IDExtractor implements ResultSetExtractor<List<String>> {
+public class StringIDExtractor implements ResultSetExtractor<List<String>> {
     @Override
     public List<String> extractData(ResultSet rs) throws SQLException, DataAccessException {
         List<String> stringList = new ArrayList<>();
