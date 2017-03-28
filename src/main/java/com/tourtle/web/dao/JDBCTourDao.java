@@ -131,7 +131,7 @@ public class JDBCTourDao implements TourDao {
         String updateStopsSql = "";
         if (tourObject.has("name")) {
             updateTourSql = "UPDATE tour SET tourname = '" + tourObject.get("name") +
-                    "' WHERE tourid = " + tourId + ";";
+                    "' WHERE tourid = " + tourId;
         }
         if (tourObject.has("beacons")) {
             JSONArray beaconsArray = (JSONArray) tourObject.get("beacons");

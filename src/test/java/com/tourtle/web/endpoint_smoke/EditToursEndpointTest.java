@@ -66,7 +66,7 @@ public class EditToursEndpointTest {
         JSONObject postBody = new JSONObject();
         body.put("name", "Godzilla snack time");
 
-        HttpPut postRequest = new HttpPut(BASE_URL + ID_SUFFIX);
+        HttpPost postRequest = new HttpPost(BASE_URL + ID_SUFFIX);
         postRequest.setEntity(entity);
 
         HttpResponse postResponse = HttpClientBuilder.create().build().execute( postRequest );
