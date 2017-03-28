@@ -129,9 +129,11 @@ public class JDBCTourDao implements TourDao {
         JSONObject tourObject = new JSONObject(body);
         String updateTourSql = "";
         String updateStopsSql = "";
+        int sum = 0;
         if (tourObject.has("name")) {
             updateTourSql = "UPDATE tour SET tourname = '" + tourObject.get("name") +
                     "' WHERE tourid = " + tourId;
+            sum += jdbcTemplate.update(updateTourSql);
         }
         if (tourObject.has("beacons")) {
             JSONArray beaconsArray = (JSONArray) tourObject.get("beacons");
@@ -143,10 +145,7 @@ public class JDBCTourDao implements TourDao {
                     updateStopsSql = updateStopsSql + ",(" + tourId + "," + beaconsArray.get(i) + ")";
                 }
             }
-        }
-        int sum = 0;
-        for (int i : jdbcTemplate.batchUpdate(updateTourSql, updateStopsSql)) {
-            sum = sum + i;
+            sum += jdbcTemplate.update(updateStopsSql);
         }
         return sum;
     }
