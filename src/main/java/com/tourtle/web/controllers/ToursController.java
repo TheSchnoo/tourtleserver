@@ -36,6 +36,11 @@ public class ToursController {
         }
     }
 
+    @RequestMapping(value="/tests", method = RequestMethod.GET)
+    String getTestReport() {
+        return "../target/site/surefire-report.html";
+    }
+
     @RequestMapping(value="/{tourId}", method = RequestMethod.GET)
     ResponseEntity<Object> getToursById(@PathVariable("tourId") String tourId) {
         System.out.println("Base tours id endpoint hit");
