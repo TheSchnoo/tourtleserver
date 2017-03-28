@@ -53,7 +53,7 @@ public class ToursController {
         System.out.println("Base tours id endpoint hit");
         try {
             int rowsAffected = tourService.createTour(tourId, body);
-            return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
+            return new ResponseEntity<>(rowsAffected, HttpStatus.CREATED);
         } catch (DuplicateKeyException e) {
             return new ResponseEntity<>("A tour already exists with that tourid", HttpStatus.IM_USED);
         }
@@ -66,7 +66,7 @@ public class ToursController {
         if (rowsAffected == 0) {
             return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.OK);
+        return new ResponseEntity<>("Rows Affected: " + rowsAffected, HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(value="/{tourId}", method = RequestMethod.DELETE)

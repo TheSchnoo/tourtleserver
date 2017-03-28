@@ -25,17 +25,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EditToursEndpointTest {
 
     private final static String BASE_URL = "https://tourtle-app.herokuapp.com/tours";
+    private final static String ID_SUFFIX = "/999";
 
     @Test
     public void editTourSmokeTest() throws IOException, JSONException {
 
         JSONObject body = new JSONObject();
-        body.put("name", "Godzilla's Tokyo Food Tour");
-        body.put("owner", "Godzilla");
+        body.put("name", "Godzillas Tokyo Food Tour");
+        body.put("owner", "fiona");
         body.put("imageurl", "example.com");
         HttpEntity entity = new StringEntity(body.toString());
 
-        HttpPut request = new HttpPut(BASE_URL + "/TEST");
+        HttpPut request = new HttpPut(BASE_URL + ID_SUFFIX);
         request.setEntity(entity);
 
         HttpResponse httpResponse = HttpClientBuilder.create().build().execute( request );
@@ -47,7 +48,7 @@ public class EditToursEndpointTest {
 
         // Test that the tour made it to the database
 
-        HttpUriRequest getRequest = new HttpGet( BASE_URL + "/TEST");
+        HttpUriRequest getRequest = new HttpGet( BASE_URL + ID_SUFFIX);
 
         HttpResponse getResponse = HttpClientBuilder.create().build().execute( getRequest );
 
@@ -66,19 +67,19 @@ public class EditToursEndpointTest {
         JSONObject postBody = new JSONObject();
         body.put("name", "Godzilla snack time");
 
-        HttpPut postRequest = new HttpPut(BASE_URL + "/TEST");
+        HttpPut postRequest = new HttpPut(BASE_URL + ID_SUFFIX);
         postRequest.setEntity(entity);
 
         HttpResponse postResponse = HttpClientBuilder.create().build().execute( postRequest );
 
         String postResponseString = EntityUtils.toString(postResponse.getEntity());
 
-        assertThat(postResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_CREATED);
+        assertThat(postResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_ACCEPTED);
         assertThat(postResponseString).isEqualTo("1");
 
         // And check database
 
-        HttpUriRequest putGetRequest = new HttpGet( BASE_URL + "/TEST");
+        HttpUriRequest putGetRequest = new HttpGet( BASE_URL + ID_SUFFIX);
 
         HttpResponse putGetResponse = HttpClientBuilder.create().build().execute( putGetRequest );
 
@@ -94,7 +95,7 @@ public class EditToursEndpointTest {
         assertThat(putGetResponseJson.get("beacons")).isNotNull().isInstanceOf(JSONArray.class);
 
         // Delete the tour
-        HttpUriRequest deleteRequest = new HttpDelete( BASE_URL + "/TEST");
+        HttpUriRequest deleteRequest = new HttpDelete( BASE_URL + ID_SUFFIX);
 
         HttpResponse deleteResponse = HttpClientBuilder.create().build().execute( deleteRequest );
 
