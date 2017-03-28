@@ -72,19 +72,26 @@ public class JDBCTourDao implements TourDao {
     @Override
     public int createTour(String tourId, String body) throws DuplicateKeyException {
         JSONObject tourJson = new JSONObject(body);
-        JSONArray poiArray = tourJson.getJSONArray("beacons");
-        String sql = "INSERT INTO tour VALUES (" + tourId + ", '" + tourJson.get("name") + "')";
-        String poisSql = "INSERT INTO tours_pois VALUES ";
-        String toursToInsert = "(" + tourId + ", %s)";
-        for (int i=0; i<poiArray.length(); i++){
-            if (i == 0) {
-                poisSql = String.format(poisSql + toursToInsert, poiArray.get(i));
-            } else {
-                poisSql = String.format(poisSql + "," + toursToInsert, poiArray.get(i));
+        String sql = String.format("INSERT INTO tour VALUES ('%s', '%s', '%s', '%s')",
+                tourId, tourJson.get("name"), tourJson.get("owner"), tourJson.get("imageurl"));
+        int[] columnsAffectedArray;
+        if (tourJson.has("beacons")) {
+            JSONArray poiArray = tourJson.getJSONArray("beacons");
+            String poisSql = "INSERT INTO tours_pois VALUES ";
+            String toursToInsert = "(" + tourId + ", %s)";
+            for (int i=0; i<poiArray.length(); i++){
+                if (i == 0) {
+                    poisSql = String.format(poisSql + toursToInsert, poiArray.get(i));
+                } else {
+                    poisSql = String.format(poisSql + "," + toursToInsert, poiArray.get(i));
+                }
             }
+            columnsAffectedArray = jdbcTemplate.batchUpdate(sql, poisSql);
+        } else {
+            columnsAffectedArray = jdbcTemplate.batchUpdate(sql);
         }
         int sum = 0;
-        for (int i : jdbcTemplate.batchUpdate(sql, poisSql)) {
+        for (int i : columnsAffectedArray) {
             sum = sum + i;
         }
         return sum;

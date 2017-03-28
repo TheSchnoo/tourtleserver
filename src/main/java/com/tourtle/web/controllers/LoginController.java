@@ -31,10 +31,6 @@ public class LoginController {
         this.webProfileService = webProfileService;
     }
 
-
-    //TODO Handle usernames that are too long/funny characters
-
-
     @RequestMapping(value="/mobileuser", method = RequestMethod.PUT)
     public ResponseEntity<MobileProfile> loginMobile(@RequestBody LoginBodyInput input) {
         boolean authenticated = loginService.loginMobile(input.user, input.password);

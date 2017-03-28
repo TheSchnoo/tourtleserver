@@ -19,8 +19,6 @@ public class TourtleServerApplication {
 	@Primary
 	public DataSource dataSource() throws Exception {
 
-		System.out.println(System.getenv("DATABASE_URL"));
-
 		String[] stringArray = System.getenv("DATABASE_URL").split("@");
 		String credentials = stringArray[0].substring(8);
 		return DataSourceBuilder

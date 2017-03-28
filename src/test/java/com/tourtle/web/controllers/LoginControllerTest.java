@@ -39,7 +39,6 @@ public class LoginControllerTest {
     private JSONObject invalidCredentials;
     private JSONObject dogCredentials;
 
-
     @Mock
     private LoginService mockLoginService;
     @Mock
@@ -49,9 +48,6 @@ public class LoginControllerTest {
 
     @InjectMocks
     private LoginController loginController;
-
-
-    // TODO TESTS FOR FUNNY STRINGS?
 
     @Before
     public void setUp() throws Exception {

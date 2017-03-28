@@ -179,8 +179,6 @@ public class ToursControllerTest {
         verifyNoMoreInteractions(mockTourService);
     }
 
-    // TODO POST AND DELETE
-
     @After
     public void tearDown() throws Exception {
     }
