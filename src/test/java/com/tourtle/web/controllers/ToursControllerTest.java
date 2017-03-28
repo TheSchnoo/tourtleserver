@@ -110,7 +110,7 @@ public class ToursControllerTest {
         mockMvc.perform(put(BASE_URL + "/t3")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string("1"));
     }
 
@@ -130,7 +130,7 @@ public class ToursControllerTest {
         mockMvc.perform(post(BASE_URL + "/t3")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isAccepted())
                 .andExpect(content().string("Rows Affected: 1"));
     }
 
