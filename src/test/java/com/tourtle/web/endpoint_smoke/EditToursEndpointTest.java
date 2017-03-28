@@ -55,12 +55,11 @@ public class EditToursEndpointTest {
         String getResponseString = EntityUtils.toString(getResponse.getEntity());
         JSONObject responseJson = new JSONObject(getResponseString);
 
-        assertThat(httpResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(getResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
 
-        assertThat(responseJson.get("tourId")).isEqualTo(4);
+        assertThat(responseJson.get("tourId")).isEqualTo("999");
         assertThat(responseJson.get("imageurl")).isEqualTo("example.com");
-        assertThat(responseJson.get("name")).isEqualTo("Godzilla's Tokyo Food Tour");
-        assertThat(responseJson.get("owner")).isEqualTo("Godzilla");
+        assertThat(responseJson.get("name")).isEqualTo("Godzillas Tokyo Food Tour");
         assertThat(responseJson.get("beacons")).isNotNull().isInstanceOf(JSONArray.class);
 
         // Edit the tour name
@@ -88,7 +87,7 @@ public class EditToursEndpointTest {
 
         assertThat(putGetResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
 
-        assertThat(putGetResponseJson.get("tourId")).isEqualTo(4);
+        assertThat(putGetResponseJson.get("tourId")).isEqualTo("999");
         assertThat(putGetResponseJson.get("imageurl")).isEqualTo("example.com");
         assertThat(putGetResponseJson.get("name")).isEqualTo("Godzilla snack time");
         assertThat(putGetResponseJson.get("owner")).isEqualTo("Godzilla");
