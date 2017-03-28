@@ -65,22 +65,21 @@ public class EditToursEndpointTest {
         // Edit the tour name
         JSONObject postBody = new JSONObject();
         body.put("name", "Godzilla snack time");
+        HttpEntity postEntity = new StringEntity(body.toString());
 
         HttpPost postRequest = new HttpPost(BASE_URL + ID_SUFFIX);
-        postRequest.setEntity(entity);
+        postRequest.setEntity(postEntity);
 
         HttpResponse postResponse = HttpClientBuilder.create().build().execute( postRequest );
 
         String postResponseString = EntityUtils.toString(postResponse.getEntity());
 
         assertThat(postResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_ACCEPTED);
-        assertThat(postResponseString).isEqualTo("1");
+        assertThat(postResponseString).isEqualTo("Rows Affected: 1");
 
         // And check database
 
-        HttpUriRequest putGetRequest = new HttpGet( BASE_URL + ID_SUFFIX);
-
-        HttpResponse putGetResponse = HttpClientBuilder.create().build().execute( putGetRequest );
+        HttpResponse putGetResponse = HttpClientBuilder.create().build().execute( getRequest );
 
         String putGetResponseString = EntityUtils.toString(putGetResponse.getEntity());
         JSONObject putGetResponseJson = new JSONObject(putGetResponseString);
@@ -90,7 +89,6 @@ public class EditToursEndpointTest {
         assertThat(putGetResponseJson.get("tourId")).isEqualTo("999");
         assertThat(putGetResponseJson.get("imageurl")).isEqualTo("example.com");
         assertThat(putGetResponseJson.get("name")).isEqualTo("Godzilla snack time");
-        assertThat(putGetResponseJson.get("owner")).isEqualTo("Godzilla");
         assertThat(putGetResponseJson.get("beacons")).isNotNull().isInstanceOf(JSONArray.class);
 
         // Delete the tour
@@ -101,7 +99,14 @@ public class EditToursEndpointTest {
         String deleteResponseString = EntityUtils.toString(deleteResponse.getEntity());
 
         assertThat(deleteResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
-        assertThat(deleteResponseString).isEqualTo("1");
+        assertThat(deleteResponseString).isEqualTo("Rows Affected: 1");
+
+        HttpResponse finalGetResponse = HttpClientBuilder.create().build().execute( getRequest );
+
+        String finalResponseString = EntityUtils.toString(finalGetResponse.getEntity());
+
+        assertThat(finalGetResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_NOT_FOUND);
+        assertThat(finalResponseString).isEqualTo("Resource not found");
 
     }
 
