@@ -7,6 +7,7 @@ import com.tourtle.web.services.LoginService;
 import com.tourtle.web.services.MobileProfileService;
 import com.tourtle.web.services.WebProfileService;
 import lombok.Data;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class LoginController {
         this.webProfileService = webProfileService;
     }
 
+
     @RequestMapping(value="/mobileuser", method = RequestMethod.PUT)
     public ResponseEntity<MobileProfile> loginMobile(@RequestBody LoginBodyInput input) {
         boolean authenticated = loginService.loginMobile(input.user, input.password);
@@ -38,7 +40,8 @@ public class LoginController {
             MobileProfile p = mobileProfileService.getMobileProfileByUsername(input.user);
             return new ResponseEntity(p, HttpStatus.OK);
         } else {
-            return new ResponseEntity("Unauthorized", HttpStatus.UNAUTHORIZED);
+            ErrorResponse output = new ErrorResponse("Unauthorized");
+            return new ResponseEntity(output, HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -50,7 +53,8 @@ public class LoginController {
                 MobileProfile p = mobileProfileService.createMobileProfile(input.user, input.password);
                 return new ResponseEntity(p, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity("Username is already taken", HttpStatus.UNPROCESSABLE_ENTITY);
+            ErrorResponse output = new ErrorResponse("Username is already taken");
+            return new ResponseEntity(output, HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -61,7 +65,8 @@ public class LoginController {
             WebProfile wp = webProfileService.getProfileByUserName(input.user);
             return new ResponseEntity(wp, HttpStatus.OK);
         } else {
-            return new ResponseEntity("Unauthorized", HttpStatus.UNAUTHORIZED);
+            ErrorResponse output = new ErrorResponse("Unauthorized");
+            return new ResponseEntity(output, HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -72,7 +77,8 @@ public class LoginController {
             WebProfile wp = webProfileService.createWebProfile(input.user, input.password);
             return new ResponseEntity(wp, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity("Username is already taken", HttpStatus.UNPROCESSABLE_ENTITY);
+            ErrorResponse output = new ErrorResponse("Username is already taken");
+            return new ResponseEntity(output, HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -81,7 +87,8 @@ public class LoginController {
         int rowsAffected = 0;
         rowsAffected = mobileProfileService.deleteMobileProfile(input.user, input.password);
         if (rowsAffected == 0) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+            ErrorResponse output = new ErrorResponse("Invalid credentials");
+            return new ResponseEntity<>(output, HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>(rowsAffected, HttpStatus.OK);
         }
@@ -91,6 +98,15 @@ public class LoginController {
     private static class LoginBodyInput {        // static class required to work properly for jackson
         private String user;
         private String password;
+    }
+
+    @Data
+    private class ErrorResponse {
+        private String response;
+
+        ErrorResponse(String response) {
+            this.response = response;
+        }
     }
 }
 
