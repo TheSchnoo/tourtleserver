@@ -23,6 +23,7 @@ import java.util.Collections;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -32,6 +33,7 @@ public class LoginControllerTest {
     private static final String BASE_URL = "/login";
     private static final String USERNAME = "Batman";
     private static final String PW = "Alfred";
+    private static final String RESPONSE_JSON_PATH = "$..response";
 
     private MockMvc mockMvc;
 
@@ -113,7 +115,7 @@ public class LoginControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(credentials.toString()))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Unauthorized"));
+                .andExpect(jsonPath(RESPONSE_JSON_PATH).value("Unauthorized"));
 
         verify(mockLoginService, times(1)).loginMobile("noone", "nothing");
         verifyNoMoreInteractions(mockLoginService);
@@ -142,7 +144,7 @@ public class LoginControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(batmanCredentials.toString()))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string("Username is already taken"));
+                .andExpect(jsonPath(RESPONSE_JSON_PATH).value("Username is already taken"));
 
         verify(mockMobileProfileService, times(1)).checkMobileProfileExists(USERNAME);
         verifyNoMoreInteractions(mockMobileProfileService);
@@ -171,7 +173,7 @@ public class LoginControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(invalidCredentials.toString()))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Unauthorized"));
+                .andExpect(jsonPath(RESPONSE_JSON_PATH).value("Unauthorized"));
 
         verify(mockLoginService, times(1)).loginWeb("noone", "nothing");
         verifyNoMoreInteractions(mockLoginService);
@@ -200,7 +202,7 @@ public class LoginControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(batmanCredentials.toString()))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string("Username is already taken"));
+                .andExpect(jsonPath(RESPONSE_JSON_PATH).value("Username is already taken"));
 
         verify(mockWebProfileService, times(1)).checkWebProfileExists(USERNAME);
         verifyNoMoreInteractions(mockWebProfileService);
@@ -225,7 +227,7 @@ public class LoginControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(batmanCredentials.toString()))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Invalid credentials"));
+                .andExpect(jsonPath(RESPONSE_JSON_PATH).value("Invalid credentials"));
     }
 
     @After

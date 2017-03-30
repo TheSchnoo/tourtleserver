@@ -1,4 +1,4 @@
-package com.tourtle.web.endpoint_smoke;
+package com.tourtle.web.endpoint;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;

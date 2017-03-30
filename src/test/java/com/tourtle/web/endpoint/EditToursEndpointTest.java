@@ -1,17 +1,15 @@
-package com.tourtle.web.endpoint_smoke;
+package com.tourtle.web.endpoint;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
-import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +27,7 @@ public class EditToursEndpointTest {
     private final static String ID_SUFFIX = "/999";
 
     @Test
-    public void editTourSmokeTest() throws IOException, JSONException {
+    public void editTourFullSystemTest() throws IOException, JSONException {
 
         JSONObject body = new JSONObject();
         body.put("name", "Godzillas Tokyo Food Tour");
