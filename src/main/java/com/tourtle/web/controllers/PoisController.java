@@ -46,7 +46,16 @@ public class PoisController {
     @RequestMapping(value="/{poiId}", method = RequestMethod.POST)
     public ResponseEntity<Integer> postPoi(@PathVariable("poiId") String poiId,
                                        @RequestBody(required = false) String body) {
-        int rowsAffected = poiService.postPoi(poiId, body);
+        int rowsAffected = 0;
+        if(poiService.checkPOIExists(poiId)) {
+            rowsAffected = poiService.postPoi(poiId, body);
+        } else {
+            try {
+                rowsAffected = poiService.createPoi(poiId, body);
+            } catch (JSONException e) {
+                return new ResponseEntity("Malformed POI data", HttpStatus.BAD_REQUEST);
+            }
+        }
         return new ResponseEntity("Rows Affected: " + rowsAffected, HttpStatus.OK);
     }
 
