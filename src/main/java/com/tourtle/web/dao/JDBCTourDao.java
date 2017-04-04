@@ -140,9 +140,9 @@ public class JDBCTourDao implements TourDao {
             updateStopsSql = "INSERT INTO tours_pois VALUES ";
             for (int i=0; i<beaconsArray.length(); i++) {
                 if (i==0) {
-                    updateStopsSql = updateStopsSql + "(" + tourId + "," + beaconsArray.get(i) + ")";
+                    updateStopsSql = updateStopsSql + "(" + tourId + ", '" + beaconsArray.get(i) + "')";
                 } else {
-                    updateStopsSql = updateStopsSql + ",(" + tourId + "," + beaconsArray.get(i) + ")";
+                    updateStopsSql = updateStopsSql + ",(" + tourId + ", '" + beaconsArray.get(i) + "')";
                 }
             }
             sum += jdbcTemplate.update(updateStopsSql);
