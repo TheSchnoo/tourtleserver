@@ -68,7 +68,7 @@ public class JDBCPoiDao implements PoiDao {
     @Override
     public int deletePoi(String poiId) {
         checkPoiExists(poiId);
-        String updatePoiString = "DELETE FROM poi WHERE beaconid = " + poiId;
+        String updatePoiString = "DELETE FROM poi WHERE beaconid = '" + poiId + "'";
         return jdbcTemplate.update(updatePoiString);
     }
 
