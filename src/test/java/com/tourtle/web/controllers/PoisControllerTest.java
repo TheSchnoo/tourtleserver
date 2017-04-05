@@ -90,6 +90,7 @@ public class PoisControllerTest {
     @Test
     public void modifyPoiWithValidPoiIdSucceeds() throws Exception {
         when(mockPoiService.postPoi("p0", "{}")).thenReturn(1);
+        when(mockPoiService.checkPOIExists("p0")).thenReturn(true);
         mockMvc.perform(post(BASE_URL + "/p0")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
