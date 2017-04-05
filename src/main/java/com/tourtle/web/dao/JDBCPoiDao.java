@@ -41,8 +41,8 @@ public class JDBCPoiDao implements PoiDao {
         String description = poiJson.getString("description");
         String pictureLink = poiJson.getString("imageurl");
 
-        String sql = String.format("INSERT INTO poi VALUES ('%s', '%s', %e, %e, '%s', '%s')",
-                poiId, name, lat, lon, description, pictureLink);
+        String sql = String.format("INSERT INTO poi VALUES ('%s', %e, %e, '%s', '%s', '%s', '')",
+                poiId, lat, lon, description, pictureLink, name);
 
         return jdbcTemplate.update(sql);
     }
